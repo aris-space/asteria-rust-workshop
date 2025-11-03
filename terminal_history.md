@@ -17,4 +17,4 @@ end
 ```
 
 ## History (fish)
-
+- `.>` `cargo new --lib protocols` Creates the `protocols library.

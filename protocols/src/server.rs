@@ -2,10 +2,9 @@
 
 use std::io::Error as IoError;
 use std::marker::PhantomData;
-use std::net::ToSocketAddrs as _;
 
 use tokio::io::{AsyncBufReadExt as _, BufReader};
-use tokio::net::{TcpSocket, TcpStream};
+use tokio::net::{TcpListener, TcpStream};
 
 /// This struct can receive messages sent from other componets
 ///
@@ -18,16 +17,9 @@ pub struct MessageReceiver<T> {
 impl<T> MessageReceiver<T> {
     /// Creates a new message receiver by waiting for a connection to establish on `port`.
     pub async fn new(port: u16) -> Result<Self, IoError> {
-        // Create a network socket
-        let addr = ("127.0.0.1", port)
-            .to_socket_addrs()?
-            .next()
-            .ok_or(IoError::new(std::io::ErrorKind::InvalidInput, "bad port"))?;
-        let socket = TcpSocket::new_v4()?;
-
-        // Listen for connections on it
-        socket.bind(addr)?;
-        let listener = socket.listen(1)?;
+        // Create the network listener
+        let addr = format!("127.0.0.1:{port}");
+        let listener = TcpListener::bind(addr).await?;
 
         // Accept the first connection and store it
         let (tcp, _) = listener.accept().await?;

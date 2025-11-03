@@ -15,6 +15,7 @@ Additionally `introduction` should contain some small examples to get used to so
 - `await`
 - `enums`
 - `traits` and derives
+- `tracing`
 - Ownership (maybe)
 
 The very basic rust syntax is covered sufficiently on the web, such as this short video <https://youtu.be/br3GIIQeefY>.

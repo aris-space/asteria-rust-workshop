@@ -18,3 +18,4 @@ end
 
 ## History (fish)
 - `.>` `cargo new --lib protocols` Creates the `protocols library.
+- `./protocols>` `cargo add serde --features derive`

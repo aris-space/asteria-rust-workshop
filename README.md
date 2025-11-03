@@ -12,6 +12,7 @@ Additionally `introduction` should contain some small examples to get used to so
 - `clippy`
 - `cargo test`
 - `rustdoc` comments
+- `await`
 - `enums`
 - `traits` and derives
 - Ownership (maybe)

@@ -19,3 +19,6 @@ end
 ## History (fish)
 - `.>` `cargo new --lib protocols` Creates the `protocols library.
 - `./protocols>` `cargo add serde --features derive`
+- `./protocols>` `cargo add serde_json` Add a dependency to serialize using json
+- `./protocols>` `cargo add tokio --features net` Add the runtime for async network communication
+- `./protocols>` `cargo add tokio --features io-util` Add another feature to an existing dependency

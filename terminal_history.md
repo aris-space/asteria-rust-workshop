@@ -30,3 +30,4 @@ end
 - `.>` `cargo new flight-computer` Now we add the flight computer with its dependencies
 - `./flight-computer>` `cargo add --path ../protocols/`
 - `./flight-computer>` `cargo add tokio --features macros,rt-multi-thread`
+- `./flight-computer>` `cargo add tokio --features time`

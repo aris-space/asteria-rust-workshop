@@ -21,3 +21,11 @@ pub struct Location {
     /// Location Altitude above sealevel in `m`
     pub altitude: f32,
 }
+
+impl Location {
+    pub const INVALID: Self = Location {
+        latitude: f64::NAN,
+        longitude: f64::NAN,
+        altitude: f32::NAN,
+    };
+}

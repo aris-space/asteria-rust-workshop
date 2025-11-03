@@ -8,7 +8,7 @@ use tokio::net::{TcpListener, TcpStream};
 
 /// This struct can receive messages sent from other componets
 ///
-/// Create it with [`Self::new()`] and receive messages with [`Self::recv()`].
+/// Create it with [`Self::establish()`] and receive messages with [`Self::recv()`].
 pub struct MessageReceiver<T> {
     stream: BufReader<TcpStream>,
     _type: std::marker::PhantomData<T>,
@@ -16,7 +16,7 @@ pub struct MessageReceiver<T> {
 
 impl<T> MessageReceiver<T> {
     /// Creates a new message receiver by waiting for a connection to establish on `port`.
-    pub async fn new(port: u16) -> Result<Self, IoError> {
+    pub async fn establish(port: u16) -> Result<Self, IoError> {
         // Create the network listener
         let addr = format!("127.0.0.1:{port}");
         let listener = TcpListener::bind(addr).await?;

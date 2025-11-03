@@ -8,7 +8,7 @@ use tokio::net::TcpStream;
 
 /// This struct can send messages of type `T` to other components
 ///
-/// Create it with [`Self::new()`] and send messages with [`Self::send()`].
+/// Create it with [`Self::connect()`] and send messages with [`Self::send()`].
 pub struct MessageSender<T> {
     stream: BufWriter<TcpStream>,
     _type: PhantomData<T>,
@@ -16,7 +16,7 @@ pub struct MessageSender<T> {
 
 impl<T> MessageSender<T> {
     /// Creates a new message sender by connecting to the server at `port`.
-    pub async fn new(port: u16) -> Result<Self, IoError> {
+    pub async fn connect(port: u16) -> Result<Self, IoError> {
         // Try to connect and wait until the connection has been established.
         let addr = format!("127.0.0.1:{port}");
         let tcp = TcpStream::connect(&addr).await?;

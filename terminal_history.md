@@ -25,3 +25,5 @@ end
 - `./protocols>` `cargo add tokio --dev --features macros,rt` Add runtime for tests
 - `.>` `cargo new avionics-mock` Add the `avionics-mock` application
 - `./avionics-mock>` `cargo add --path ../protocols/` Add the protocol library as a dependency
+- `./avionics-mock>` `cargo add tokio --features macros,rt-multi-thread` Add the runtim
+- `./avionics-mock>` `cargo add tokio --features time` as well as the utility to wait for time

@@ -1,9 +1,14 @@
 //! This module contains definitions of data types transferred between the components.
 
 /// The data that the avionics can send to the flight computer.
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum SensorMessage {
     /// Current location
     LocationData(Location),
+}
+
+impl SensorMessage {
+    pub const COMMUNICATIONS_PORT: u16 = 4200;
 }
 
 /// Position in WGS84 inertial frame.

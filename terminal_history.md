@@ -23,3 +23,5 @@ end
 - `./protocols>` `cargo add tokio --features net` Add the runtime for async network communication
 - `./protocols>` `cargo add tokio --features io-util` Add another feature to an existing dependency
 - `./protocols>` `cargo add tokio --dev --features macros,rt` Add runtime for tests
+- `.>` `cargo new avionics-mock` Add the `avionics-mock` application
+- `./avionics-mock>` `cargo add --path ../protocols/` Add the protocol library as a dependency

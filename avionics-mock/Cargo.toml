@@ -1,0 +1,10 @@
+[package]
+name = "avionics-mock"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+protocols = { version = "0.1.0", path = "../protocols" }
+
+[lints]
+workspace = true

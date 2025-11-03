@@ -4,7 +4,7 @@
 [workspace]
 resolver = "3"
 
-members = ["protocols"]
+members = [ "avionics-mock","protocols"]
 
 # Lints are like automatic code reviews and should be treated as such.
 [workspace.lints.clippy]

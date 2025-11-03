@@ -3,3 +3,14 @@
 
 [workspace]
 resolver = "3"
+
+# Lints are like automatic code reviews and should be treated as such.
+[workspace.lints.clippy]
+unwrap_used = "deny"
+pedantic = { level = "warn", priority = -1 }
+missing_errors_doc = "allow"         # Important, but the needing a section is not always pretty.
+missing_panics_doc = "allow"         # Functions shouldn't panic, if contain panic code, it should be unreachable
+ignored_unit_patterns = "allow"      # Not clearer to me
+must_use_candidate = "allow"         # Not all `new` calls are problematic to not use
+implicit_hasher = "allow"            # We'll only ever use the default hasher
+doc_markdown = "allow"               # Too many false positives for acronymes I can't bother to whitelist

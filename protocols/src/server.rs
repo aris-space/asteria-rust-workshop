@@ -11,6 +11,7 @@ use tokio::net::{TcpListener, TcpStream};
 /// Create it with [`Self::establish()`] and receive messages with [`Self::recv()`].
 pub struct MessageReceiver<T> {
     stream: BufReader<TcpStream>,
+    line_buf: Vec<u8>,
     _type: std::marker::PhantomData<T>,
 }
 
@@ -27,6 +28,7 @@ impl<T> MessageReceiver<T> {
 
         Ok(Self {
             stream: reader,
+            line_buf: Vec::new(),
             _type: PhantomData,
         })
     }
@@ -34,12 +36,19 @@ impl<T> MessageReceiver<T> {
 
 impl<T: serde::de::DeserializeOwned> MessageReceiver<T> {
     /// Read a single message from the connection.
+    ///
+    /// This is cancelation safe.
     pub async fn recv(&mut self) -> Result<T, IoError> {
-        // Read a line from the stream
-        let mut line = String::new();
-        self.stream.read_line(&mut line).await?;
+        // Continue reading the line from the stream.
+        // `read_until` is cancelation safe, if used with the persistent buffer,
+        // which the clients of this function needs.
+        self.stream
+            .read_until('\n'.try_into().expect("fits into byte"), &mut self.line_buf)
+            .await?;
         // Parse this line as a json `T`.
-        serde_json::from_str::<T>(&line)
-            .map_err(|e| IoError::new(std::io::ErrorKind::InvalidData, e))
+        let res = serde_json::from_slice::<T>(&self.line_buf)
+            .map_err(|e| IoError::new(std::io::ErrorKind::InvalidData, e));
+        self.line_buf.clear();
+        res
     }
 }

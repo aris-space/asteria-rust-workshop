@@ -31,3 +31,5 @@ end
 - `./flight-computer>` `cargo add --path ../protocols/`
 - `./flight-computer>` `cargo add tokio --features macros,rt-multi-thread`
 - `./flight-computer>` `cargo add tokio --features time`
+- `./flight-computer>` `cargo run --bin flight-computer` Run both components and see it working
+- `./flight-computer>` `cargo run --bin avionics-mock`

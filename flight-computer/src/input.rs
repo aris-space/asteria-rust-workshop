@@ -1,5 +1,6 @@
 //! This module contains the input data for the flight computer
 
+use std::io::Error as IoError;
 use std::io::Write;
 use std::time::Duration;
 
@@ -22,21 +23,26 @@ impl Default for Inputs {
 
 impl Inputs {
     /// Update the inputs with new data
-    pub async fn update(&mut self, receiver: &mut MessageReceiver<SensorMessage>) {
+    pub async fn update(
+        &mut self,
+        receiver: &mut MessageReceiver<SensorMessage>,
+    ) -> Result<(), IoError> {
         // Try to receive new messages
-        // Because async reads block until data is available and I can't find a non-blocking read,
-        // we use a timeout to avoid blocking forever.
+        // Because async reads block until data is available we use a timeout to avoid blocking forever.
         // However, this is not ideal as it requires cancellation safety, otherwise data might be lost.
-        let _ = timeout(Duration::from_millis(10), async {
+        let r = timeout(Duration::from_millis(10), async {
             loop {
-                let Ok(message) = receiver.recv().await else {
-                    eprintln!("malformed message");
-                    continue;
-                };
+                let message = receiver.recv().await?;
                 self.update_from_message(message);
             }
+            #[allow(unreachable_code)] // just used for type inference
+            Result::<(), IoError>::Ok(())
         })
         .await;
+        match r {
+            Ok(Err(e)) => Err(e), // IO error
+            _ => Ok(()),          // timeout reached, no more messages
+        }
     }
 
     /// Update the inputs from a single message

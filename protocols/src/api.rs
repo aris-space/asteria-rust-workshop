@@ -5,6 +5,8 @@
 pub enum SensorMessage {
     /// Current location
     LocationData(Location),
+    /// Current velocity
+    VelocityData(Velocity),
 }
 
 impl SensorMessage {
@@ -27,5 +29,24 @@ impl Location {
         latitude: f64::NAN,
         longitude: f64::NAN,
         altitude: f32::NAN,
+    };
+}
+
+/// Velocity in NED frame.
+#[derive(Debug, Default, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+pub struct Velocity {
+    /// Velocity North in `m/s`
+    pub north: f32,
+    /// Velocity East in `m/s`
+    pub east: f32,
+    /// Velocity Down in `m/s`
+    pub down: f32,
+}
+
+impl Velocity {
+    pub const INVALID: Self = Velocity {
+        north: f32::NAN,
+        east: f32::NAN,
+        down: f32::NAN,
     };
 }

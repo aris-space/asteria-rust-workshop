@@ -34,3 +34,4 @@ end
 - `./flight-computer>` `cargo run --bin flight-computer` Run both components and see it working
 - `./flight-computer>` `cargo run --bin avionics-mock`
 - `./flight-computer>` `cargo test --package avionics-mock --bin avionics-mock -- sim::tests --nocapture` Test the simulation. Note this can be clicked in VSCode
+- `.>` `cargo add --package protocols --dev tokio --features time` For tests. You can also specify --package

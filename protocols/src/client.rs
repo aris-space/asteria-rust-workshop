@@ -3,27 +3,28 @@
 use std::io::Error as IoError;
 use std::marker::PhantomData;
 
-use tokio::io::{AsyncWriteExt as _, BufWriter};
-use tokio::net::TcpStream;
+use tokio::net::UdpSocket;
 
 /// This struct can send messages of type `T` to other components
 ///
 /// Create it with [`Self::connect()`] and send messages with [`Self::send()`].
 pub struct MessageSender<T> {
-    stream: BufWriter<TcpStream>,
+    socket: UdpSocket,
     _type: PhantomData<T>,
 }
 
 impl<T> MessageSender<T> {
-    /// Creates a new message sender by connecting to the server at `port`.
+    /// Creates a new message sender to send to a specific port.
     pub async fn connect(port: u16) -> Result<Self, IoError> {
-        // Try to connect and wait until the connection has been established.
-        let addr = format!("127.0.0.1:{port}");
-        let tcp = TcpStream::connect(&addr).await?;
-        let writer = BufWriter::new(tcp);
+        // Bind to a random local port
+        let socket = UdpSocket::bind("[::1]:0").await?;
+
+        // Set the target address
+        let addr = format!("[::1]:{port}");
+        socket.connect(addr).await?;
 
         Ok(Self {
-            stream: writer,
+            socket,
             _type: PhantomData,
         })
     }
@@ -34,10 +35,16 @@ impl<T: serde::Serialize> MessageSender<T> {
     pub async fn send(&mut self, message: &T) -> Result<(), IoError> {
         // Serialize the message to JSON
         let json = serde_json::to_string(message)?;
-        // Write the JSON line to the stream
-        self.stream.write_all(json.as_bytes()).await?;
-        self.stream.write_all(b"\n").await?;
-        self.stream.flush().await?;
+        let bytes = json.as_bytes();
+        if bytes.len() > 1024 {
+            return Err(IoError::new(
+                std::io::ErrorKind::InvalidInput,
+                "Message too large to send",
+            ));
+        }
+
+        // Send the JSON data over UDP
+        self.socket.send(bytes).await?;
         Ok(())
     }
 }

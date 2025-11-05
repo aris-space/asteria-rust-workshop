@@ -7,27 +7,46 @@ use crate::input::Inputs;
 
 pub enum State {
     Idle,
-    Thrusting,
+    Thrusting { last_velocity: f32 },
     Coasting,
-    Descend,
+    Descend { max_velocity: f32 },
     Shutdown,
 }
 
 impl State {
-    #[allow(clippy::match_same_arms)] // todo
     #[allow(clippy::unused_async)] // will be needed to send to avionics
     pub async fn tick(
         &mut self,
-        _inputs: &Inputs,
+        inputs: &Inputs,
         _avionics: &mut MessageSender<AvionicsCommandMessage>,
     ) {
-        // TODO: actually do something
         match self {
-            State::Idle => {}
-            State::Thrusting => {}
-            State::Coasting => {}
-            State::Descend => {}
-            State::Shutdown => {}
+            State::Idle | State::Shutdown => {}
+            State::Thrusting { last_velocity } => {
+                if inputs.velocity.down.abs() < *last_velocity {
+                    println!("Starting to decelerate");
+                    *self = State::Coasting;
+                } else {
+                    *last_velocity = inputs.velocity.down.abs();
+                }
+            }
+            State::Coasting => {
+                if inputs.velocity.down > 0.0 {
+                    println!(
+                        "Apogee at {:.1}m, starting descent",
+                        inputs.location.altitude
+                    );
+                    *self = State::Descend { max_velocity: 0.0 };
+                }
+            }
+            State::Descend { max_velocity } => {
+                if inputs.velocity.down.abs() < 1.0 && inputs.location.altitude <= 1500. {
+                    println!("Touchdown, max descent velocity was {max_velocity:.1} m/s");
+                    *self = State::Shutdown;
+                } else {
+                    *max_velocity = max_velocity.max(inputs.velocity.down.abs());
+                }
+            }
         }
     }
 
@@ -42,7 +61,7 @@ impl State {
                 match avionics.send(&AvionicsCommandMessage::IgniteEngine).await {
                     Ok(_) => {
                         println!("Starting ignition sequence");
-                        *self = State::Thrusting;
+                        *self = State::Thrusting { last_velocity: 0.0 };
                     }
                     Err(e) => eprintln!("Failed to send ignition command to avionics: {e}"),
                 }

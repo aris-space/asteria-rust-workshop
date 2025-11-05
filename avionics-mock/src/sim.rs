@@ -33,8 +33,8 @@ impl SimulationState {
             // Simple thrust model: constant acceleration while fuel remains
             let acceleration = 30.0; // m/s^2
             self.velocity.down += -acceleration * dt;
-            self.velocity.north += 0.02 * acceleration * dt;
-            self.velocity.east += 0.01 * acceleration * dt;
+            self.velocity.north += 0.01 * acceleration * dt;
+            self.velocity.east -= 0.03 * acceleration * dt;
 
             self.fuel_remaining -= Self::MASS_FLOW * dt;
             if self.fuel_remaining <= 0.0 {

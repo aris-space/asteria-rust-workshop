@@ -26,12 +26,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Main loop at 20Hz
     let mut interval = tokio::time::interval(Duration::from_secs_f32(1. / 20.));
+    let mut phase_counter = 0;
     loop {
         // Wait for the next tick
         interval.tick().await;
 
         // Update inputs from sensors
         inputs.update(&mut sensor_receiver);
+        if phase_counter == 0 {
+            println!(
+                "Current location: {}°N {}°E {}m ASL",
+                inputs.location.latitude, inputs.location.longitude, inputs.location.altitude
+            );
+        }
 
         // Handle incoming telemetry commands
         while let Ok(Some(command)) = telemetry_command_receiver
@@ -47,8 +54,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         state.tick(&inputs, &mut avionics_command_sender).await;
 
         // Send telemetry data
-        if let Err(e) = inputs.send_telemetry(&mut telemetry_sender).await {
-            eprintln!("problem with sending telemetry: {e}");
+        if phase_counter % 3 == 0 {
+            let _ = inputs.send_telemetry(&mut telemetry_sender).await;
         }
+
+        phase_counter = (phase_counter + 1) % 20;
     }
 }

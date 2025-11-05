@@ -45,11 +45,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         sim_state.tick(dt);
 
         // Send data
-        message_sender
+        let _ = message_sender
             .send(&SensorMessage::LocationData(sim_state.location.clone()))
-            .await?;
-        message_sender
+            .await;
+        let _ = message_sender
             .send(&SensorMessage::VelocityData(sim_state.velocity.clone()))
-            .await?;
+            .await;
     }
 }

@@ -39,13 +39,12 @@ impl State {
     ) {
         match command {
             TelemetryCommandMessage::StartIgntion => {
-                if avionics
-                    .send(&AvionicsCommandMessage::IgniteEngine)
-                    .await
-                    .is_ok()
-                {
-                    println!("Starting ignition sequence");
-                    *self = State::Thrusting;
+                match avionics.send(&AvionicsCommandMessage::IgniteEngine).await {
+                    Ok(_) => {
+                        println!("Starting ignition sequence");
+                        *self = State::Thrusting;
+                    }
+                    Err(e) => eprintln!("Failed to send ignition command to avionics: {e}"),
                 }
             }
         }

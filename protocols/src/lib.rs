@@ -8,7 +8,7 @@ pub mod server;
 mod tests {
     use std::time::Duration;
 
-    use crate::api::Location;
+    use crate::api::{Location, SensorMessage};
     use crate::client::MessageSender;
     use crate::server::MessageReceiver;
 
@@ -17,17 +17,16 @@ mod tests {
     #[tokio::test]
     async fn send_and_receive() -> Result<(), Box<dyn std::error::Error>> {
         // Create the connection.
-        const PORT: u16 = 4242;
-        let mut receiver = MessageReceiver::<Location>::listen(PORT).await?;
-        let mut sender = MessageSender::<Location>::connect(PORT).await?;
+        let mut receiver = MessageReceiver::<SensorMessage>::listen().await?;
+        let mut sender = MessageSender::<SensorMessage>::connect().await?;
 
         // Create some data to be sent
         #[allow(clippy::unreadable_literal)]
-        let dübi = Location {
+        let dübi = SensorMessage::LocationData(Location {
             latitude: 47.405582,
             longitude: 8.632077,
             altitude: 434.,
-        };
+        });
 
         // Send the location, receive it on the other end and make sure they are the same.
         sender.send(&dübi).await?;
@@ -45,21 +44,20 @@ mod tests {
     #[tokio::test]
     async fn send_and_try_recieve() -> Result<(), Box<dyn std::error::Error>> {
         // Create the connection.
-        const PORT: u16 = 4243;
-        let mut receiver = MessageReceiver::<Location>::listen(PORT).await?;
+        let mut receiver = MessageReceiver::<SensorMessage>::listen().await?;
         // Try to receive data when none is sent
         let message = receiver.try_recv()?;
         assert!(message.is_none());
 
-        let mut sender = MessageSender::<Location>::connect(PORT).await?;
+        let mut sender = MessageSender::<SensorMessage>::connect().await?;
 
         // Create some data to be sent
         #[allow(clippy::unreadable_literal)]
-        let dübi = Location {
+        let dübi = SensorMessage::LocationData(Location {
             latitude: 47.405582,
             longitude: 8.632077,
             altitude: 434.,
-        };
+        });
 
         for _ in 0..5 {
             // Send the location,

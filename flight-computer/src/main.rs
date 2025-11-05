@@ -15,8 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut state = state_machine::State::Idle;
 
     // Connect to other components
-    let mut sensor_receiver =
-        MessageReceiver::<SensorMessage>::listen(SensorMessage::COMMUNICATIONS_PORT).await?;
+    let mut sensor_receiver = MessageReceiver::<SensorMessage>::listen().await?;
 
     // Main loop at 20Hz
     let mut interval = tokio::time::interval(Duration::from_secs_f32(1. / 20.));

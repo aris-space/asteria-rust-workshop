@@ -16,12 +16,8 @@ const WICHLEN: Location = Location {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Connect to the flight computer
-    let mut message_sender =
-        MessageSender::<SensorMessage>::connect(SensorMessage::COMMUNICATIONS_PORT).await?;
-    let mut command_receiver = MessageReceiver::<AvionicsCommandMessage>::listen(
-        AvionicsCommandMessage::COMMUNICATIONS_PORT,
-    )
-    .await?;
+    let mut message_sender = MessageSender::<SensorMessage>::connect().await?;
+    let mut command_receiver = MessageReceiver::<AvionicsCommandMessage>::listen().await?;
 
     // Simulation state
     let mut sim_state = sim::SimulationState::new();

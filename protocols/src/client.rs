@@ -5,6 +5,8 @@ use std::marker::PhantomData;
 
 use tokio::net::UdpSocket;
 
+use crate::api::MessageChannel;
+
 /// This struct can send messages of type `T` to other components
 ///
 /// Create it with [`Self::connect()`] and send messages with [`Self::send()`].
@@ -14,13 +16,16 @@ pub struct MessageSender<T> {
 }
 
 impl<T> MessageSender<T> {
-    /// Creates a new message sender to send to a specific port.
-    pub async fn connect(port: u16) -> Result<Self, IoError> {
+    /// Creates a new message sender for a specific channel.
+    pub async fn connect() -> Result<Self, IoError>
+    where
+        T: MessageChannel,
+    {
         // Bind to a random local port
         let socket = UdpSocket::bind("[::1]:0").await?;
 
         // Set the target address
-        let addr = format!("[::1]:{port}");
+        let addr = format!("[::1]:{port}", port = T::COMMUNICATIONS_PORT);
         socket.connect(addr).await?;
 
         Ok(Self {

@@ -5,6 +5,8 @@ use std::marker::PhantomData;
 
 use tokio::net::UdpSocket;
 
+use crate::api::MessageChannel;
+
 /// This struct can receive messages sent from other componets
 ///
 /// Create it with [`Self::listen()`] and receive messages with [`Self::recv()`] or [`Self::try_recv()`].
@@ -14,9 +16,12 @@ pub struct MessageReceiver<T> {
 }
 
 impl<T> MessageReceiver<T> {
-    /// Creates a new message receiver by listening on a specific port.
-    pub async fn listen(port: u16) -> Result<Self, IoError> {
-        let addr = format!("[::1]:{port}");
+    /// Creates a new message receiver by listening on a specific channel.
+    pub async fn listen() -> Result<Self, IoError>
+    where
+        T: MessageChannel,
+    {
+        let addr = format!("[::1]:{port}", port = T::COMMUNICATIONS_PORT);
         let socket = UdpSocket::bind(addr).await?;
 
         Ok(Self {

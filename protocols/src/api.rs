@@ -1,5 +1,9 @@
 //! This module contains definitions of data types transferred between the components.
 
+pub trait MessageChannel {
+    const COMMUNICATIONS_PORT: u16;
+}
+
 /// The data that the avionics can send to the flight computer.
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum SensorMessage {
@@ -9,8 +13,8 @@ pub enum SensorMessage {
     VelocityData(Velocity),
 }
 
-impl SensorMessage {
-    pub const COMMUNICATIONS_PORT: u16 = 4201;
+impl MessageChannel for SensorMessage {
+    const COMMUNICATIONS_PORT: u16 = 4201;
 }
 
 /// The data that the flight computer can send to the avionics.
@@ -20,8 +24,8 @@ pub enum AvionicsCommandMessage {
     IgniteEngine,
 }
 
-impl AvionicsCommandMessage {
-    pub const COMMUNICATIONS_PORT: u16 = 4202;
+impl MessageChannel for AvionicsCommandMessage {
+    const COMMUNICATIONS_PORT: u16 = 4202;
 }
 
 /// Position in WGS84 inertial frame.

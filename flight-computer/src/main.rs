@@ -24,7 +24,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         interval.tick().await;
 
         // Update inputs from sensors
-        inputs.update(&mut sensor_receiver).await?;
+        inputs.update(&mut sensor_receiver);
 
         // Update state machine with current inputs
         state.tick(&inputs);

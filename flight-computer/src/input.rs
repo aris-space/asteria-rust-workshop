@@ -2,8 +2,9 @@
 
 use std::io::Error as IoError;
 
-use protocols::api::Velocity;
 use protocols::api::{Location, SensorMessage};
+use protocols::api::{TelemetryDataMessage, Velocity};
+use protocols::client::MessageSender;
 use protocols::server::MessageReceiver;
 
 /// Stores the current inputs of the system, given by the avionics
@@ -43,5 +44,21 @@ impl Inputs {
                 self.velocity = vel;
             }
         }
+    }
+
+    /// Send the current telemetry data
+    pub async fn send_telemetry(
+        &self,
+        sender: &mut MessageSender<TelemetryDataMessage>,
+    ) -> Result<(), IoError> {
+        // Send location data
+        let location_message = TelemetryDataMessage::LocationData(self.location.clone());
+        sender.send(&location_message).await?;
+
+        // Send velocity data
+        let velocity_message = TelemetryDataMessage::VelocityData(self.velocity.clone());
+        sender.send(&velocity_message).await?;
+
+        Ok(())
     }
 }

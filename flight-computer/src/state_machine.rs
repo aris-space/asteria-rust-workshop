@@ -1,5 +1,8 @@
 //! This crate implements the state of the rocket and its transition logic.
 
+use protocols::api::{AvionicsCommandMessage, TelemetryCommandMessage};
+use protocols::client::MessageSender;
+
 use crate::input::Inputs;
 
 pub enum State {
@@ -11,8 +14,13 @@ pub enum State {
 }
 
 impl State {
-    #[allow(clippy::match_same_arms)]
-    pub fn tick(&mut self, _inputs: &Inputs) {
+    #[allow(clippy::match_same_arms)] // todo
+    #[allow(clippy::unused_async)] // will be needed to send to avionics
+    pub async fn tick(
+        &mut self,
+        _inputs: &Inputs,
+        _avionics: &mut MessageSender<AvionicsCommandMessage>,
+    ) {
         // TODO: actually do something
         match self {
             State::Idle => {}
@@ -20,6 +28,26 @@ impl State {
             State::Coasting => {}
             State::Descend => {}
             State::Shutdown => {}
+        }
+    }
+
+    /// Handle a telemetry command
+    pub async fn handle_command(
+        &mut self,
+        command: TelemetryCommandMessage,
+        avionics: &mut MessageSender<AvionicsCommandMessage>,
+    ) {
+        match command {
+            TelemetryCommandMessage::StartIgntion => {
+                if avionics
+                    .send(&AvionicsCommandMessage::IgniteEngine)
+                    .await
+                    .is_ok()
+                {
+                    println!("Starting ignition sequence");
+                    *self = State::Thrusting;
+                }
+            }
         }
     }
 }

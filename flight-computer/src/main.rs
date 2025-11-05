@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use protocols::api::SensorMessage;
+use protocols::api::{
+    AvionicsCommandMessage, SensorMessage, TelemetryCommandMessage, TelemetryDataMessage,
+};
+use protocols::client::MessageSender;
 use protocols::server::MessageReceiver;
 
 pub mod input;
@@ -16,6 +19,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Connect to other components
     let mut sensor_receiver = MessageReceiver::<SensorMessage>::listen().await?;
+    let mut telemetry_sender = MessageSender::<TelemetryDataMessage>::connect().await?;
+    let mut avionics_command_sender = MessageSender::<AvionicsCommandMessage>::connect().await?;
+    let mut telemetry_command_receiver =
+        MessageReceiver::<TelemetryCommandMessage>::listen().await?;
 
     // Main loop at 20Hz
     let mut interval = tokio::time::interval(Duration::from_secs_f32(1. / 20.));
@@ -26,7 +33,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Update inputs from sensors
         inputs.update(&mut sensor_receiver);
 
+        // Handle incoming telemetry commands
+        while let Ok(Some(command)) = telemetry_command_receiver
+            .try_recv()
+            .inspect_err(|e| eprintln!("problem with receiving telemetry command: {e}"))
+        {
+            state
+                .handle_command(command, &mut avionics_command_sender)
+                .await;
+        }
+
         // Update state machine with current inputs
-        state.tick(&inputs);
+        state.tick(&inputs, &mut avionics_command_sender).await;
+
+        // Send telemetry data
+        if let Err(e) = inputs.send_telemetry(&mut telemetry_sender).await {
+            eprintln!("problem with sending telemetry: {e}");
+        }
     }
 }

@@ -1,0 +1,11 @@
+[package]
+name = "mission-control"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+protocols = { version = "0.1.0", path = "../protocols" }
+tokio = { version = "1.48.0", features = ["macros", "rt"] }
+
+[lints]
+workspace = true

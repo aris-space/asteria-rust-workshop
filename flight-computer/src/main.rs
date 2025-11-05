@@ -35,7 +35,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         inputs.update(&mut sensor_receiver);
         if phase_counter == 0 {
             println!(
-                "Current location: {}°N {}°E {}m ASL",
+                "Current location: {:.6}°N {:.6}°E {:.1}m ASL",
                 inputs.location.latitude, inputs.location.longitude, inputs.location.altitude
             );
         }

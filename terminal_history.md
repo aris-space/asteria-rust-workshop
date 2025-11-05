@@ -35,3 +35,8 @@ end
 - `./flight-computer>` `cargo run --bin avionics-mock`
 - `./flight-computer>` `cargo test --package avionics-mock --bin avionics-mock -- sim::tests --nocapture` Test the simulation. Note this can be clicked in VSCode
 - `.>` `cargo add --package protocols --dev tokio --features time` For tests. You can also specify --package
+The new few messages create the mission control crate and then run the specific binary
+- `.>` `cargo new mission-control`
+- `.>` `cargo add --package mission-control --path protocols`
+- `.>` `cargo add --package mission-control tokio --features macros,rt`
+- `.>` `cargo run --bin send_ignition_command`

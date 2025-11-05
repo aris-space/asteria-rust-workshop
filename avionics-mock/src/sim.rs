@@ -22,7 +22,7 @@ impl SimulationState {
         SimulationState {
             location: WICHLEN,
             velocity: Velocity::default(),
-            fuel_remaining: 12.0,
+            fuel_remaining: 6.0,
             is_burning: false,
         }
     }
@@ -31,8 +31,11 @@ impl SimulationState {
     pub fn tick(&mut self, dt: f32) {
         if self.is_burning {
             // Simple thrust model: constant acceleration while fuel remains
-            let acceleration = 25.0; // m/s^2
+            let acceleration = 30.0; // m/s^2
             self.velocity.down += -acceleration * dt;
+            self.velocity.north += 0.02 * acceleration * dt;
+            self.velocity.east += 0.01 * acceleration * dt;
+
             self.fuel_remaining -= Self::MASS_FLOW * dt;
             if self.fuel_remaining <= 0.0 {
                 self.is_burning = false;
@@ -45,11 +48,14 @@ impl SimulationState {
         }
 
         self.location.altitude -= self.velocity.down * dt;
+        self.location.latitude += f64::from(self.velocity.north * dt) / (40_007_863. / 360.); // Approx conversion m to degrees
+        self.location.longitude += f64::from(self.velocity.east * dt)
+            / ((40_075_017. / 360.) * self.location.latitude.to_radians().cos());
 
         if self.location.altitude <= WICHLEN.altitude {
             // Rocket has landed
             self.location.altitude = WICHLEN.altitude;
-            self.velocity.down = 0.0;
+            self.velocity = Velocity::default();
         }
     }
 

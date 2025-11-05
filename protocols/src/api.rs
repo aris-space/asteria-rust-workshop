@@ -28,6 +28,30 @@ impl MessageChannel for AvionicsCommandMessage {
     const COMMUNICATIONS_PORT: u16 = 4202;
 }
 
+/// The data that the flight computer can send to the mission control.
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+pub enum TelemetryDataMessage {
+    /// Current location
+    LocationData(Location),
+    /// Current velocity
+    VelocityData(Velocity),
+}
+
+impl MessageChannel for TelemetryDataMessage {
+    const COMMUNICATIONS_PORT: u16 = 4203;
+}
+
+/// The data that the mission control can send to the flight computer.
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+pub enum TelemetryCommandMessage {
+    /// Command to start the ignition sequence
+    StartIgntion,
+}
+
+impl MessageChannel for TelemetryCommandMessage {
+    const COMMUNICATIONS_PORT: u16 = 4204;
+}
+
 /// Position in WGS84 inertial frame.
 #[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Location {

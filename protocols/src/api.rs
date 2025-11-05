@@ -10,7 +10,18 @@ pub enum SensorMessage {
 }
 
 impl SensorMessage {
-    pub const COMMUNICATIONS_PORT: u16 = 4200;
+    pub const COMMUNICATIONS_PORT: u16 = 4201;
+}
+
+/// The data that the flight computer can send to the avionics.
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
+pub enum AvionicsCommandMessage {
+    /// Command to start the engine
+    IgniteEngine,
+}
+
+impl AvionicsCommandMessage {
+    pub const COMMUNICATIONS_PORT: u16 = 4202;
 }
 
 /// Position in WGS84 inertial frame.

@@ -52,6 +52,12 @@ impl SimulationState {
             self.velocity.down = 0.0;
         }
     }
+
+    pub fn ignite_engine(&mut self) {
+        if self.fuel_remaining > 0.0 {
+            self.is_burning = true;
+        }
+    }
 }
 
 #[cfg(test)]
@@ -75,7 +81,7 @@ mod tests {
             time += dt;
         }
 
-        sim.is_burning = true;
+        sim.ignite_engine();
 
         while time < 300.0 {
             sim.tick(dt);

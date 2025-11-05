@@ -1,7 +1,8 @@
 use std::time::Duration;
 
-use protocols::api::{Location, SensorMessage};
+use protocols::api::{AvionicsCommandMessage, Location, SensorMessage};
 use protocols::client::MessageSender;
+use protocols::server::MessageReceiver;
 
 mod sim;
 
@@ -17,6 +18,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Connect to the flight computer
     let mut message_sender =
         MessageSender::<SensorMessage>::connect(SensorMessage::COMMUNICATIONS_PORT).await?;
+    let mut command_receiver = MessageReceiver::<AvionicsCommandMessage>::listen(
+        AvionicsCommandMessage::COMMUNICATIONS_PORT,
+    )
+    .await?;
 
     // Simulation state
     let mut sim_state = sim::SimulationState::new();
@@ -26,6 +31,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut interval = tokio::time::interval(Duration::from_secs_f32(1. / 5.));
     loop {
         interval.tick().await;
+
+        // Check for commands
+        while let Some(command) = command_receiver.try_recv()? {
+            match command {
+                AvionicsCommandMessage::IgniteEngine => {
+                    println!("Igniting engine!");
+                    sim_state.ignite_engine();
+                }
+            }
+        }
 
         // Advance simulation
         let now = tokio::time::Instant::now();

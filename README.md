@@ -22,10 +22,10 @@ Additionally `introduction` should contain some small examples to get used to so
 - `rustdoc` comments & how to see them
 
 - `enums` & pattern matching
-- `await`
-- traits and derives
-- `tracing`
 - Ownership (maybe)
+- traits and derives
+- `await`
+- `tracing`
 
 The very basic rust syntax is covered sufficiently on the web, such as this short video <https://youtu.be/br3GIIQeefY>.
 

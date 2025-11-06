@@ -22,6 +22,10 @@ impl MessageChannel for SensorMessage {
 pub enum AvionicsCommandMessage {
     /// Command to start the engine
     IgniteEngine,
+    /// Command to deploy drogue parachute
+    DeployDrogue,
+    /// Command to deploy main parachute
+    DeployMain,
 }
 
 impl MessageChannel for AvionicsCommandMessage {

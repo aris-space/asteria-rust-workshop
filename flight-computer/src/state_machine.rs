@@ -18,7 +18,7 @@ impl State {
     pub async fn tick(
         &mut self,
         inputs: &Inputs,
-        _avionics: &mut MessageSender<AvionicsCommandMessage>,
+        avionics: &mut MessageSender<AvionicsCommandMessage>,
     ) {
         match self {
             State::Idle | State::Shutdown => {}
@@ -36,6 +36,8 @@ impl State {
                         "Apogee at {:.1}m, starting descent",
                         inputs.location.altitude
                     );
+                    // deploy drogue, ignore send errors because the transimission is unreliable anyway
+                    let _ = avionics.send(&AvionicsCommandMessage::DeployDrogue).await;
                     *self = State::Descend { max_velocity: 0.0 };
                 }
             }

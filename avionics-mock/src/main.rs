@@ -35,6 +35,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     println!("Igniting engine!");
                     sim_state.ignite_engine();
                 }
+                AvionicsCommandMessage::DeployDrogue => {
+                    println!("Deploying drogue parachute!");
+                    sim_state.deploy_drogue();
+                }
+                AvionicsCommandMessage::DeployMain => {
+                    println!("Deploying main parachute!");
+                    sim_state.deploy_main();
+                }
             }
         }
 

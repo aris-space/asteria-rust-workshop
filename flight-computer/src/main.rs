@@ -26,12 +26,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Main loop at 20Hz
     let mut interval = tokio::time::interval(Duration::from_secs_f32(1. / 20.));
-    let mut phase_counter = 0;
+    let mut phase_counter = 0; // where in the second we are
     loop {
         // Wait for the next tick
         interval.tick().await;
 
-        // Update inputs from sensors
+        // Update inputs from sensors, print every 20 ticks
         inputs.update(&mut sensor_receiver);
         if phase_counter == 0 {
             println!(
@@ -56,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Update state machine with current inputs
         state.tick(&inputs, &mut avionics_command_sender).await;
 
-        // Send telemetry data
+        // Send telemetry data every 3 ticks
         if phase_counter % 3 == 0 {
             let _ = inputs.send_telemetry(&mut telemetry_sender).await;
         }

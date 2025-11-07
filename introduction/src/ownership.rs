@@ -144,3 +144,6 @@ fn mutexing() {
 // With this, we've gone through the most important rules for ownership,
 // which is enforced by the "Borrow Checker",
 // and is a unique concept to Rust.
+
+/// We now move on the another potentially new, but not unique concepts: [`super::traits`].
+const _: () = ();

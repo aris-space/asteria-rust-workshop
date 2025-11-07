@@ -304,3 +304,8 @@ fn test_sum_string_options() {
 // Ok, we have now used soo many lines, it is time to show how to make modules:
 // Ctrl/Cmd click on it.
 mod ownership;
+
+// =============================================
+// Section 4: Traits & generics
+// =============================================
+mod traits;

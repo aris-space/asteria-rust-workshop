@@ -114,3 +114,6 @@ impl MyPublicStruct {
         }
     }
 }
+
+/// Go see the usage at [`super::use_pub_stuff`]
+const _: () = ();

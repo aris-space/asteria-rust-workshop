@@ -126,3 +126,6 @@ where
 // There are many advanced uses, and virtually every crate defines its own traits,
 // but we can't covery everything.
 // You at least now know they exists and how they look.
+
+/// now lets jump to [`super::async_code`] to learn about how to make concurrent IO a breeze.
+const _: () = ();

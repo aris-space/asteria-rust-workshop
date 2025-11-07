@@ -99,3 +99,18 @@ async fn test_timeout() {
 // This is exactly opposite of synchronous Rust, and is sparking some critisism.
 
 // But in most cases, what we learned now is enough.
+
+// Now let's move to the last topic, lets give the main function some access to something we did:
+pub struct MyPublicStruct {
+    pub public_field: i32,
+    private_field: u16,
+}
+
+impl MyPublicStruct {
+    pub fn new(public_field: i32) -> Self {
+        Self {
+            public_field,
+            private_field: 0,
+        }
+    }
+}

@@ -314,3 +314,13 @@ mod traits;
 // Section 5: async
 // =============================================
 mod async_code;
+
+// =============================================
+// Section 6: Modules
+// =============================================
+#[test]
+fn use_pub_stuff() {
+    let x = async_code::MyPublicStruct::new(8);
+    println!("{}", x.public_field);
+    //X println!("{}", x.private_field);
+}

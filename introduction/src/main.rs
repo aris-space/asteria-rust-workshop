@@ -72,6 +72,10 @@ fn main() {
         //X let arc = Arc::new(());
     }
 
+    //X to rename variables
+    let baaaad_name = [1, 2, 3];
+    let _y = baaaad_name;
+
     //X it shows you possiblities:
     let _x = "lkj".len();
 
@@ -173,6 +177,7 @@ fn fallible_function_div_by(x: u32, y: u32) -> Result<u32, ()> {
 }
 
 /// And you can work with enums, such as results with pattern matching
+#[test]
 fn use_the_fallible_function() {
     match fallible_function_div_by(10, 2) {
         Ok(value) => println!("Result is {value}"),
@@ -181,6 +186,7 @@ fn use_the_fallible_function() {
 }
 
 /// You can also use if let for simple cases
+#[test]
 fn use_if_let() {
     if let Ok(value) = fallible_function_div_by(10, 2) {
         println!("Result is {value}");
@@ -188,6 +194,7 @@ fn use_if_let() {
 }
 
 /// And let-else to deal with the happy case
+#[test]
 fn use_let_else() {
     let Ok(value) = fallible_function_div_by(10, 2) else {
         println!("Division by zero!");
@@ -257,11 +264,11 @@ fn test_combine_results() {
     assert_eq!(combine_results(Ok(2), Err(())), Err(()));
 }
 
-/// given two optional string slices that should represent
+/// Given two optional string slices that should represent
 /// unsigned integers, return their sum as Some(u32).
-/// Return None if either input is missing, invalid, or zero.
+/// Return None if either input is missing or invalid.
 ///
-/// Notes you can parse with
+/// Note that you can parse with
 /// ```
 /// let _: Result<u32, _> = "1".parse();
 /// ```
@@ -289,3 +296,11 @@ fn test_sum_string_options() {
     assert_eq!(sum_string_options(None, Some("4")), None);
     assert_eq!(sum_string_options(Some("1"), Some("2")), Some(3));
 }
+
+// =============================================
+// Section 3: Ownership
+// =============================================
+
+// Ok, we have now used soo many lines, it is time to show how to make modules:
+// Ctrl/Cmd click on it.
+mod ownership;

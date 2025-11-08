@@ -6,8 +6,10 @@ use protocols::api::{Location, SensorMessage};
 use protocols::api::{TelemetryDataMessage, Velocity};
 use protocols::client::MessageSender;
 use protocols::server::MessageReceiver;
+use serde::Serialize;
 
 /// Stores the current inputs of the system, given by the avionics
+#[derive(serde::Serialize)]
 pub struct Inputs {
     pub location: Location,
     pub velocity: Velocity,

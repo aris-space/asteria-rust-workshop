@@ -1,16 +1,34 @@
 use std::time::Duration;
 
+use csv_async::{AsyncSerializer, AsyncWriterBuilder};
 use protocols::api::{
     AvionicsCommandMessage, SensorMessage, TelemetryCommandMessage, TelemetryDataMessage,
 };
 use protocols::client::MessageSender;
 use protocols::server::MessageReceiver;
+use std::error::Error;
+use tokio::fs::File;
 
 pub mod input;
 pub mod state_machine;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // create csv file
+    let mut file_location = File::create("loc.csv").await?;
+
+    let mut file_velocity = File::create("velocity.csv").await?;
+    
+    // initialize writer
+    let mut wrt = AsyncWriterBuilder::new().has_headers(true).create_writer(vec![]);
+    
+    // initialize serializer
+    let mut ser = AsyncSerializer::from_writer(vec![]);
+    
+    let mut wrt = AsyncWriterBuilder::new().has_headers(true).create_writer(vec![]);
+    let mut ser_2 = AsyncSerializer::from_writer(vec![]);
+
+
     // Initialize inputs
     let mut inputs = input::Inputs::default();
 
@@ -41,6 +59,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 inputs.location.altitude,
                 inputs.velocity.down
             );
+            // insert data
+            ser.serialize(&
+                inputs.location
+            ).await?;
+
+            ser_2.serialize(&inputs.velocity).await?;
+
+
+
         }
 
         // Handle incoming telemetry commands

@@ -14,7 +14,7 @@ env:
   CARGO_TERM_COLOR: always
 jobs:
   test:
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu
     timeout-minutes: 10
     name: ⚙️ test (ubuntu)
     steps:
@@ -30,7 +30,7 @@ jobs:
         # Not using `--all-targets`, to get doctests everywhere.
         run: cargo test --locked --workspace --all-features -- --skip skipci
   fmt:
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu
     timeout-minutes: 10
     name: 🖋️ fmt
     steps:
@@ -42,7 +42,7 @@ jobs:
       - name: cargo fmt --check
         run: cargo fmt --check
   clippy:
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu
     timeout-minutes: 10
     name: 📋 clippy
     permissions:
@@ -72,7 +72,7 @@ jobs:
     # run docs generation on nightly rather than stable. This enables features like
     # https://doc.rust-lang.org/beta/unstable-book/language-features/doc-cfg.html which allows an
     # API be documented as only available in some specific platforms.
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu
     timeout-minutes: 10
     name: 📖 doc
     steps:

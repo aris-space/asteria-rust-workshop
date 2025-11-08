@@ -1,6 +1,7 @@
 //! Simulates the rockets ascent and decent.
 
 use protocols::api::{Location, Velocity};
+use rand::Rng;
 
 use crate::WICHLEN;
 
@@ -98,7 +99,14 @@ impl SimulationState {
     /// Causes the simulation to simulate opening the drogue parachute.
     pub fn deploy_drogue(&mut self) {
         if self.deployment_status == DeploymentStatus::None {
-            self.deployment_status = DeploymentStatus::Drogue;
+            let mut rng = rand::thread_rng();
+            let randomstuff: u32 = rng.random();
+            if randomstuff % 2 == 0 {
+                eprintln!("Drogue parachute deployment failed!");
+                self.deployment_status = DeploymentStatus::BrokenChutes;
+            } else {
+                self.deployment_status = DeploymentStatus::Drogue;
+            }
         } else {
             eprintln!("Drogue parachute already deployed");
         }

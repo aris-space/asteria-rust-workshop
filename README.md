@@ -83,4 +83,3 @@ Find a crate do help you with that and log the location and velocity to CSV file
 - [ ] Show 3 ways of seeing rustdoc
 - [ ] Rand as google/llm exercise
 - [ ] tracing
-

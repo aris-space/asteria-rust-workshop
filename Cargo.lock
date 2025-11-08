@@ -61,14 +61,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mission-control"
-version = "0.1.0"
-dependencies = [
- "protocols",
- "tokio",
-]
-
-[[package]]
 name = "pin-project-lite"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"

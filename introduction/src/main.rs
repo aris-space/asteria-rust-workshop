@@ -92,24 +92,6 @@ fn main() {
         println!(":(");
     }
 
-    // rust also has smart documentation comments, using with three slashes
-
-    /// This struct is all my own.
-    ///
-    /// You can use it like this:
-    /// ```
-    /// let x = MyStruct {
-    ///     foo: 12
-    /// };
-    /// ```
-    ///
-    /// and you can also link to other stuff, such as [`str`].
-    struct MyStruct {
-        /// Fields can have docs too. This is an [`i32`].
-        foo: i32,
-    }
-    // functions can and should also have docs.
-
     // Cargo has many features, including running your code,
     // but also running automated tests.
     // For this, we have to jump out of the main function
@@ -119,6 +101,36 @@ fn main() {
 #[test]
 fn check_addition_is_as_expected() {
     assert_eq!(1 + 2, 3);
+}
+
+// rust also has smart documentation comments, using with three slashes
+
+/// This struct is all my own.
+///
+/// You can use it like this:
+/// ```
+/// let x = MyStruct {
+///     foo: 12
+/// };
+/// ```
+///
+/// and you can also link to other stuff, such as [`str`].
+struct MyStruct {
+    /// Fields can have docs too. This is an [`i32`].
+    foo: i32,
+}
+// functions can and should also have docs.
+
+#[test]
+fn try_documentation() {
+    // For one, you can hover over the code.
+    let x = MyStruct { foo: 12 };
+    assert_eq!(x.foo, 12);
+
+    // Or, I mean just read the code, jump to it with Cmd/Ctrl+Click (Go to Definition).
+
+    // Or open the generated website with
+    // `cargo doc --no-deps --document-private-items --open --bin introduction`
 }
 
 // In conclusion: use the tooling, it the best thing about Rust!

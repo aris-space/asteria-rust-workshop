@@ -40,3 +40,4 @@ The new few messages create the mission control crate and then run the specific 
 - `.>` `cargo add --package mission-control --path protocols`
 - `.>` `cargo add --package mission-control tokio --features macros,rt`
 - `.>` `cargo run --bin send_ignition_command`
+- `.>` `cargo new send-igntion-command`

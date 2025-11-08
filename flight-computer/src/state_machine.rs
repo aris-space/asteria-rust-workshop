@@ -18,7 +18,7 @@ impl State {
     pub async fn tick(
         &mut self,
         inputs: &Inputs,
-        _avionics: &mut MessageSender<AvionicsCommandMessage>,
+        avionics: &mut MessageSender<AvionicsCommandMessage>,
     ) {
         match self {
             State::Idle | State::Shutdown | State::Descend => {}
@@ -31,8 +31,10 @@ impl State {
                 }
             }
             State::Coasting => {
-                //X Done in Class
-                todo!()
+                if inputs.velocity.down > 0.0 {
+                    let _ = avionics.send(&AvionicsCommandMessage::DeployDrogue).await;
+                    *self = State::Descend;
+                }
             }
         }
     }

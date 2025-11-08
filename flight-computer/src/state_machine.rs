@@ -9,7 +9,7 @@ pub enum State {
     Idle,
     Thrusting { last_velocity: f32 },
     Coasting,
-    Descend { max_velocity: f32 },
+    Descend,
     Shutdown,
 }
 
@@ -18,10 +18,10 @@ impl State {
     pub async fn tick(
         &mut self,
         inputs: &Inputs,
-        avionics: &mut MessageSender<AvionicsCommandMessage>,
+        _avionics: &mut MessageSender<AvionicsCommandMessage>,
     ) {
         match self {
-            State::Idle | State::Shutdown => {}
+            State::Idle | State::Shutdown | State::Descend => {}
             State::Thrusting { last_velocity } => {
                 if inputs.velocity.down.abs() < *last_velocity {
                     println!("Starting to decelerate");
@@ -31,23 +31,8 @@ impl State {
                 }
             }
             State::Coasting => {
-                if inputs.velocity.down > 0.0 {
-                    println!(
-                        "Apogee at {:.1}m, starting descent",
-                        inputs.location.altitude
-                    );
-                    // deploy drogue, ignore send errors because the transimission is unreliable anyway
-                    let _ = avionics.send(&AvionicsCommandMessage::DeployDrogue).await;
-                    *self = State::Descend { max_velocity: 0.0 };
-                }
-            }
-            State::Descend { max_velocity } => {
-                if inputs.velocity.down.abs() < 1.0 && inputs.location.altitude <= 1500. {
-                    println!("Touchdown, max descent velocity was {max_velocity:.1} m/s");
-                    *self = State::Shutdown;
-                } else {
-                    *max_velocity = max_velocity.max(inputs.velocity.down.abs());
-                }
+                //X Done in Class
+                todo!()
             }
         }
     }

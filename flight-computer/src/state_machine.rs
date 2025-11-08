@@ -40,6 +40,7 @@ impl State {
             }
             State::Descend => {
                 if inputs.location.altitude < 3000.0 {
+                    println!("We are so great");
                     let _ = avionics.send(&AvionicsCommandMessage::DeployMain).await;
                     *self = State::MainDescend;
                 }

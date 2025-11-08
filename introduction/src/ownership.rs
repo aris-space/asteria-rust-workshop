@@ -32,9 +32,9 @@ fn borrowing_function(_x: &MyThing) {}
 fn use_consuming_borrowing_function() {
     let x = MyThing; // x is now the owner.
     let y = x; // we can use it by moving e.g. to a new variable.
-    //X let z = x; // This won't work, y is now the owner.
+    // let z = x; //X This won't work, y is now the owner.
     consuming_function(y);
-    //X let z = y; // This won't work, we have given it away to the function.
+    // let z = y; //X This won't work, we have given it away to the function.
 
     // However, by only sharing it, we can still use it afterwards
     {
@@ -68,7 +68,7 @@ fn borrowing_rule() {
     // as there could be problems if two would write at the same time.
     {
         let x1 = &mut x;
-        //X let x2 = &mut x;
+        // let x2 = &mut x; //X Uncomment this line
         mutably_borrowing_function(x1);
     }
 
@@ -76,7 +76,7 @@ fn borrowing_rule() {
     // as there could be problems if one writes and the other reads a the same time.
     {
         let x1 = &x;
-        //X let x2 = &mut x;
+        // let x2 = &mut x; //X Uncomment this line
         borrowing_function(x1);
     }
 }

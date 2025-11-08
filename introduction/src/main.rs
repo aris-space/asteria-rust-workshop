@@ -17,7 +17,7 @@ fn main() {
     let my_tuple = (my_int, my_float);
 
     // Do maths, but only on same types
-    //X let _bad = my_int + my_float;
+    // let _bad = my_int + my_float; //X Uncomment this line
     let good = f64::from(my_int) + my_float;
     let _nests = good + (good * good);
 
@@ -58,7 +58,7 @@ fn main() {
 
     // The compiler & rust-analizer help you:
     // it shows you where erros occur
-    //X let _x = 2 + "hi";
+    // let _x = 2 + "hi"; //X Uncomment this line
 
     // it shows you inferred types
     let _x: i32 = 2;
@@ -67,26 +67,27 @@ fn main() {
     // it can be used to automatically import / refactor
     {
         fn foo(_: &str) {}
-        foo("Hello World"); //X you can extract this into variables, ...
+        foo("Hello World"); // you can extract this into variables, ... //X Press Cmd+. (Quick Fix)
 
-        //X let arc = Arc::new(());
+        // let arc = Arc::new(()); //X Remove this line and press (Quick Fix)
     }
 
-    //X to rename variables
+    // to rename variables //X Press F2 (Rename Symbol)
     let baaaad_name = [1, 2, 3];
     let _y = baaaad_name;
 
-    //X it shows you possiblities:
+    // it shows you possiblities: //X Delete the `.len()` and type .
     let _x = "lkj".len();
 
     // Rust format helps you stay consistent
-    #[rustfmt::skip] //X can be removed
+    #[rustfmt::skip] // can be removed //X Remove this line and save
     let   _x =   2+ 2 ;
     let _x = 1; // this looks way nicer
 
     // Clippy is even smarter about helping you:
     let my_string = "hiii";
-    #[allow(clippy::comparison_to_empty)] //X These attributes can override the warnings
+    #[allow(clippy::comparison_to_empty)] //X Remove this line
+    // These attributes can override the warnings
     if my_string == "" {
         println!(":(");
     }
@@ -222,13 +223,9 @@ fn test_option_of_option_flatten() {
 /// Given `ExactlyOneOfBelow`, return the inner u32 if it is a `VariantA` or `VariantD`,
 /// Otherwise return None.
 #[allow(clippy::needless_pass_by_value)]
-fn extract_number(x: ExactlyOneOfBelow) -> Option<u32> {
-    //X Exercise
-    match x {
-        ExactlyOneOfBelow::VariantA(n) => Some(n),
-        ExactlyOneOfBelow::VariantB(_) | ExactlyOneOfBelow::VariantC(_) => None,
-        ExactlyOneOfBelow::VariantD { my_field, .. } => Some(my_field),
-    }
+fn extract_number(_x: ExactlyOneOfBelow) -> Option<u32> {
+    //X Exercise: implement this function
+    todo!()
 }
 
 #[test]
@@ -250,11 +247,8 @@ fn test_extract_number() {
 /// Given two Results, return Ok if both are Ok and add their values,
 /// otherwise return the first Err encountered
 fn combine_results(x: Result<u32, ()>, y: Result<u32, ()>) -> Result<u32, ()> {
-    //X Exercise
-    match (x, y) {
-        (Ok(a), Ok(b)) => Ok(a + b),
-        (Err(e), _) | (_, Err(e)) => Err(e),
-    }
+    //X Exercise: implement this function
+    todo!("{x:?} {y:?}")
 }
 
 #[test]
@@ -273,19 +267,8 @@ fn test_combine_results() {
 /// let _: Result<u32, _> = "1".parse();
 /// ```
 fn sum_string_options(a: Option<&str>, b: Option<&str>) -> Option<u32> {
-    //X Exercise
-    #[allow(clippy::question_mark)]
-    let Some(a) = a else {
-        return None;
-    };
-    let b = b?; // or with question mark
-
-    let Ok(x_a) = a.parse::<u32>() else {
-        return None;
-    };
-    let x_b = b.parse::<u32>().ok()?;
-
-    Some(x_a + x_b)
+    // Exercise: implement this function
+    todo!("{a:?}, {b:?}")
 }
 
 #[test]
@@ -322,5 +305,5 @@ mod async_code;
 fn use_pub_stuff() {
     let x = async_code::MyPublicStruct::new(8);
     println!("{}", x.public_field);
-    //X println!("{}", x.private_field);
+    // println!("{}", x.private_field); //X Uncomment this line
 }

@@ -98,7 +98,7 @@ fn test_print_if_different() {
         a: "hi".into(),
         b: (1., 1.),
     };
-    //X print_if_different(&not_printable_or_comparable, &not_printable_or_comparable); // Won't work
+    // print_if_different(&not_printable_or_comparable, &not_printable_or_comparable); //X Won't work
 
     let printable_and_comparable1 = MyEnum::VariantB(0., 1.0);
     let printable_and_comparable2 = MyEnum::VariantB(0., 2.0);

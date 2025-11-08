@@ -10,6 +10,8 @@ pub enum State {
     Thrusting { last_velocity: f32 },
     Coasting,
     Descend,
+    MainDescend,
+    Touchdown,
     Shutdown,
 }
 
@@ -21,7 +23,7 @@ impl State {
         avionics: &mut MessageSender<AvionicsCommandMessage>,
     ) {
         match self {
-            State::Idle | State::Shutdown | State::Descend => {}
+            State::Idle | State::Shutdown | State::Touchdown => {}
             State::Thrusting { last_velocity } => {
                 if inputs.velocity.down.abs() < *last_velocity {
                     println!("Starting to decelerate");
@@ -34,6 +36,17 @@ impl State {
                 if inputs.velocity.down > 0.0 {
                     let _ = avionics.send(&AvionicsCommandMessage::DeployDrogue).await;
                     *self = State::Descend;
+                }
+            }
+            State::Descend => {
+                if inputs.location.altitude < 3000.0 {
+                    let _ = avionics.send(&AvionicsCommandMessage::DeployMain).await;
+                    *self = State::MainDescend;
+                }
+            }
+            State::MainDescend => {
+                if inputs.location.altitude < 0.1 && inputs.velocity.down.abs() < 0.1 {
+                    *self = State::Touchdown;
                 }
             }
         }

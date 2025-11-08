@@ -50,7 +50,7 @@ Add it in a way you see fit.
 
 > Easy
 
-The separation mechanism isn't super reliable.
+The separation mechanism so super reliable that we never witness failures so we have to simulate them to get the experience.
 Add code to the avionics-mock simulator to, with some random chance,
 not deploy the drogue chute when the command arrives.
 
